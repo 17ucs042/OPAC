@@ -4,6 +4,8 @@
 
     <item android:id="@+id/issuedetails"
         android:title="Issue Details"/>
+    <item android:id="@+id/reserved"
+        android:title="Reserved"/>
     <item android:id="@+id/logout"
         android:title="Logout"/>
 </menu>

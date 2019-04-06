@@ -56,7 +56,7 @@ public class Books extends AppCompatActivity {
                         intent.putExtras(bundle);
                         intent.putExtra("id name",id_name);
                         startActivity(intent);
-                        finish();
+                      //  finish();
                         /*Copies copy = copies.get("copy1");
                         Log.d("status_is", copy.getAccession().toString());
                        // Log.d("status_is", copy.get(0).toString());

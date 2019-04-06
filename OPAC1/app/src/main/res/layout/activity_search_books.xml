@@ -106,7 +106,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:text="Download Books\nAccompanied By CD"
+            android:text="Books\nAccompanied By CD"
             android:textSize="20sp" />
 
     </RelativeLayout>

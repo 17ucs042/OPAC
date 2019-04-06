@@ -31,6 +31,7 @@ public class BookAdapter extends ArrayAdapter<BookInformation> {
         TextView author = bookitemview.findViewById(R.id.author);
         TextView publisher = bookitemview.findViewById(R.id.publisher);
         TextView call = bookitemview.findViewById(R.id.call_no);
+        TextView available=bookitemview.findViewById(R.id.available);
 
         name.setText(current_book.getName());
         author.setText(current_book.getAuthor());
