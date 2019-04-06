@@ -84,10 +84,10 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/reserved"
+            android:id="@+id/issued_by"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reserved By"
+            android:text="Issued By"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:gravity="center"/>

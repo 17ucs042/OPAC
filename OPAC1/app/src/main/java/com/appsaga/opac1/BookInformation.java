@@ -13,6 +13,7 @@ public class BookInformation implements Serializable {
     String publisher;
     String call_no;
     HashMap<String,Copies> copies;
+   // String key;
    // ArrayList<Copies> copy;
 
     public BookInformation(String name, int id, String author, String publisher, String call_no, HashMap<String,Copies> copies) {
@@ -28,6 +29,14 @@ public class BookInformation implements Serializable {
     {
 
     }
+
+   /* public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }*/
 
     public HashMap<String, Copies> getCopies() {
         return copies;

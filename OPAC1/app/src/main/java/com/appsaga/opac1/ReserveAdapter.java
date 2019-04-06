@@ -1,6 +1,7 @@
 package com.appsaga.opac1;
 
 import android.content.Context;
+import android.icu.util.ValueIterator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -34,15 +36,14 @@ public class ReserveAdapter extends ArrayAdapter<Copies> {
         TextView code = reserve_view.findViewById(R.id.code);
         TextView type = reserve_view.findViewById(R.id.type);
         TextView status = reserve_view.findViewById(R.id.status);
-        TextView reserved = reserve_view.findViewById(R.id.reserved);
-        Button reserve = reserve_view.findViewById(R.id.reserve);
+        TextView issued_by = reserve_view.findViewById(R.id.issued_by);
         final CheckBox check = reserve_view.findViewById(R.id.check);
 
         accession.setText(current_copy.getAccession());
         code.setText(current_copy.getCode());
         type.setText(current_copy.getType());
         status.setText(current_copy.getStatus());
-        reserved.setText(current_copy.getReserved());
+        issued_by.setText(current_copy.getIssued_by());
 
         check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -58,6 +59,24 @@ public class ReserveAdapter extends ArrayAdapter<Copies> {
                 }
             }
         });
+
+       /* reserve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for(int i=0;i<parent.getChildCount();i++)
+                {
+                    View view = parent.getChildAt(i);
+                    CheckBox checkBox = view.findViewById(R.id.check);
+                    if(checkBox.isChecked())
+                    {
+                        TextView textView = view.findViewById(R.id.accession);
+                        String name = textView.getText().toString();
+                        Toast.makeText(getContext(),"Reserving "+name,Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });*/
 
         return reserve_view;
     }

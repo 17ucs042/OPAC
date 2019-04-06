@@ -10,19 +10,39 @@ public class Copies implements Serializable {
     String status;
     String type;
     String issued_by;
+    String key;
+    String parent_key;
 
-    public Copies(String accession, String code, String reserved, String status, String type,String issued_by) {
+    public Copies(String accession, String code, String reserved, String status, String type,String issued_by,String key,String parent_key) {
         this.accession = accession;
         this.code = code;
         this.reserved = reserved;
         this.status = status;
         this.type = type;
         this.issued_by=issued_by;
+        this.key=key;
+        this.parent_key=parent_key;
     }
 
     public Copies()
     {
 
+    }
+
+    public String getParent_key() {
+        return parent_key;
+    }
+
+    public void setParent_key(String parent_key) {
+        this.parent_key = parent_key;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getIssued_by() {

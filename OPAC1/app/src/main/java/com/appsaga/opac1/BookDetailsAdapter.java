@@ -31,13 +31,13 @@ public class BookDetailsAdapter extends ArrayAdapter<Copies> {
         TextView code = bookdetailview.findViewById(R.id.code);
         TextView type = bookdetailview.findViewById(R.id.type);
         TextView status = bookdetailview.findViewById(R.id.status);
-        TextView issued_by = bookdetailview.findViewById(R.id.issued_by);
+        TextView reserved_by = bookdetailview.findViewById(R.id.reserved_by);
 
         accession.setText(current_copy.getAccession());
         code.setText(current_copy.getCode());
         type.setText(current_copy.getType());
         status.setText(current_copy.getStatus());
-        issued_by.setText(current_copy.getIssued_by());
+        reserved_by.setText(current_copy.getReserved());
 
         return bookdetailview;
     }

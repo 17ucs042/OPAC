@@ -93,7 +93,7 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
-        nv = (NavigationView) findViewById(R.id.nv);
+        nv = findViewById(R.id.nv);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -174,8 +174,11 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
                             //bookInformation.setName(ds.getValue(BookInformation.class).getName());
                             //bookInformation.setName(ds.child("Book").getValue(BookInformation.class).getName());
 
+                            String key = ds.getKey();
+                            Log.d("Key_is",key);
                             if(book_name.equalsIgnoreCase(bookInformation.getName()) || bookInformation.getName().toUpperCase().contains(book_name.toUpperCase())) {
 
+                               // bookInformation.setKey(key);
                                 Log.d(TAG, "showData: name: " + bookInformation.name +"and"+ bookInformation.getId());
                                 Log.d(TAG,"BOOKDATA: "+ book_name);
                                 books.add(bookInformation);

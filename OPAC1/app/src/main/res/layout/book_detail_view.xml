@@ -8,82 +8,107 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/code"
-            android:layout_width="wrap_content"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:text="Series Code"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/accession"
-            android:layout_width="wrap_content"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:text="Accession No."
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/type"
-            android:layout_width="wrap_content"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:text="Type"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/status"
-            android:layout_width="wrap_content"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:text="Status"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:gravity="center">
 
         <TextView
-            android:id="@+id/issued_by"
-            android:layout_width="wrap_content"
+            android:id="@+id/reserved_by"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:text="Reserved By"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
     </LinearLayout>
 
 </LinearLayout>
