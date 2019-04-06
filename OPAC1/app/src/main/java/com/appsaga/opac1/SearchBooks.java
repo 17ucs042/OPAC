@@ -17,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.barteksc.pdfviewer.PDFView;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -60,6 +63,7 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
+    Handler handler=new Handler();
     private GoogleApiClient googleApiClient;
     private GoogleSignInOptions gso;
 
@@ -68,13 +72,12 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
     private static final String TAG = "ViewDatabase";
     EditText findBooks;
     ImageView search;
-    Handler handler;
 
-    TextView userEmail,userName;
+    TextView userEmail,userName,bookCD;
     ImageView userPic;
     ArrayList<BookInformation> books;
     String id_name;
-
+    Animation animation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +85,25 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
         dl = (DrawerLayout) findViewById(R.id.drawer);
         t = new ActionBarDrawerToggle(this, dl, R.string.open, R.string.close);
         dl.addDrawerListener(t);
+         animation = AnimationUtils.loadAnimation(this, R.anim.blink);
         t.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        bookCD=findViewById(R.id.textView2);
+        bookCD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bookCD.startAnimation(animation);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(SearchBooks.this, PDFViewer.class);
+                        startActivity(intent);
+                        //finish();
+                    }
+                }, 500);
+            }
+        });
 
 bookload=(BookLoading)findViewById(R.id.bookloading);
         gso =  new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -134,12 +154,19 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        ImageView filter = findViewById(R.id.filter);
+        final ImageView filter = findViewById(R.id.filter);
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filter.startAnimation(animation);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-                spinner.performClick();
+                        spinner.performClick();
+                        //finish();
+                    }
+                }, 500);
             }
         });
 
@@ -155,70 +182,78 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
             @Override
             public void onClick(View v) {
 
-                final String search=findBooks.getText().toString().trim();
-                final String spinner_value = spinner.getSelectedItem().toString();
-               if(findBooks.getText().toString().trim().equalsIgnoreCase(""))
-              {
-                  findBooks.setError("Please Enter");
-               }
-              else{
-                  bookload.setVisibility(View.VISIBLE);
-                   bookload.start();
-
-                booksRef.addValueEventListener(new ValueEventListener() {
+                search.startAnimation(animation);
+                handler.postDelayed(new Runnable() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        books = new ArrayList<>();
-                        books.clear();
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                            BookInformation bookInformation = ds.getValue(BookInformation.class);
-
-                            if(spinner_value.equalsIgnoreCase("Title")) {
-
-                                if (search.equalsIgnoreCase(bookInformation.getName()) || bookInformation.getName().toUpperCase().contains(search.toUpperCase())) {
-
-                                    books.add(bookInformation);
-                                }
-                            }
-                            else if(spinner_value.equalsIgnoreCase("Author Name")) {
-
-                                if (search.equalsIgnoreCase(bookInformation.getAuthor()) || bookInformation.getAuthor().toUpperCase().contains(search.toUpperCase())) {
-
-                                    books.add(bookInformation);
-                                }
-                            }
-                            else if(spinner_value.equalsIgnoreCase("Publisher Name")) {
-
-                                if (search.equalsIgnoreCase(bookInformation.getPublisher()) || bookInformation.getPublisher().toUpperCase().contains(search.toUpperCase())) {
-
-                                    books.add(bookInformation);
-                                }
-                            }
+                    public void run() {
+                        final String search=findBooks.getText().toString().trim();
+                        final String spinner_value = spinner.getSelectedItem().toString();
+                        if(findBooks.getText().toString().trim().equalsIgnoreCase(""))
+                        {
+                            findBooks.setError("Please Enter");
                         }
-                        handler=new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                           public void run() {
-                                bookload.stop();
-                                bookload.setVisibility(View.INVISIBLE);
-                                Intent intent = new Intent(SearchBooks.this,Books.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("books",books);
-                                intent.putExtras(bundle);
-                                intent.putExtra("id name",id_name);
-                                startActivity(intent);
-                                finish();
-                            }
-                       },2500);
+                        else{
+                            bookload.setVisibility(View.VISIBLE);
+                            bookload.start();
+
+                            booksRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    books = new ArrayList<>();
+                                    books.clear();
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                        BookInformation bookInformation = ds.getValue(BookInformation.class);
+
+                                        if(spinner_value.equalsIgnoreCase("Title")) {
+
+                                            if (search.equalsIgnoreCase(bookInformation.getName()) || bookInformation.getName().toUpperCase().contains(search.toUpperCase())) {
+
+                                                books.add(bookInformation);
+                                            }
+                                        }
+                                        else if(spinner_value.equalsIgnoreCase("Author Name")) {
+
+                                            if (search.equalsIgnoreCase(bookInformation.getAuthor()) || bookInformation.getAuthor().toUpperCase().contains(search.toUpperCase())) {
+
+                                                books.add(bookInformation);
+                                            }
+                                        }
+                                        else if(spinner_value.equalsIgnoreCase("Publisher Name")) {
+
+                                            if (search.equalsIgnoreCase(bookInformation.getPublisher()) || bookInformation.getPublisher().toUpperCase().contains(search.toUpperCase())) {
+
+                                                books.add(bookInformation);
+                                            }
+                                        }
+                                    }
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            bookload.stop();
+                                            bookload.setVisibility(View.INVISIBLE);
+                                            Intent intent = new Intent(SearchBooks.this,Books.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putSerializable("books",books);
+                                            intent.putExtras(bundle);
+                                            intent.putExtra("id name",id_name);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    },2500);
+
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });}
 
                     }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                }, 500);
 
-                    }
-                });}
+
             }
         });
 

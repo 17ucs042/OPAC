@@ -101,6 +101,7 @@
             android:layout_width="187dp"
             android:layout_height="66dp"
             android:layout_below="@+id/ll3"
+            android:textColor="	#0645AD"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="5dp"
