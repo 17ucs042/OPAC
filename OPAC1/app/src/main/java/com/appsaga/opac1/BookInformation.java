@@ -13,16 +13,14 @@ public class BookInformation implements Serializable {
     String publisher;
     String call_no;
     HashMap<String,Copies> copies;
-   // String key;
-   // ArrayList<Copies> copy;
 
-    public BookInformation(String name, int id, String author, String publisher, String call_no, HashMap<String,Copies> copies) {
+    public BookInformation(String name, int id, String author, String publisher, String call_no, HashMap<String, Copies> copies) {
         this.name = name;
         this.id = id;
         this.author = author;
         this.publisher = publisher;
         this.call_no = call_no;
-        this.copies=copies;
+        this.copies = copies;
     }
 
     public BookInformation()

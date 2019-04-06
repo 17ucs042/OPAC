@@ -1,6 +1,7 @@
 package com.appsaga.opac1;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -72,6 +73,7 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
     TextView userEmail,userName;
     ImageView userPic;
     ArrayList<BookInformation> books;
+    String id_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +155,8 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
             @Override
             public void onClick(View v) {
 
-                final String book_name=findBooks.getText().toString().trim();
+                final String search=findBooks.getText().toString().trim();
+                final String spinner_value = spinner.getSelectedItem().toString();
                if(findBooks.getText().toString().trim().equalsIgnoreCase(""))
               {
                   findBooks.setError("Please Enter");
@@ -171,19 +174,27 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                             BookInformation bookInformation = ds.getValue(BookInformation.class);
-                            //bookInformation.setName(ds.getValue(BookInformation.class).getName());
-                            //bookInformation.setName(ds.child("Book").getValue(BookInformation.class).getName());
 
-                            String key = ds.getKey();
-                            Log.d("Key_is",key);
-                            if(book_name.equalsIgnoreCase(bookInformation.getName()) || bookInformation.getName().toUpperCase().contains(book_name.toUpperCase())) {
+                            if(spinner_value.equalsIgnoreCase("Title")) {
 
-                               // bookInformation.setKey(key);
-                                Log.d(TAG, "showData: name: " + bookInformation.name +"and"+ bookInformation.getId());
-                                Log.d(TAG,"BOOKDATA: "+ book_name);
-                                books.add(bookInformation);
-                                //Toast.makeText(SearchBooks.this, "Name: " + bookInformation.getName(), Toast.LENGTH_SHORT).show();
-                                //Toast.makeText(SearchBooks.this, "Id: " + bookInformation.getId(), Toast.LENGTH_SHORT).show();
+                                if (search.equalsIgnoreCase(bookInformation.getName()) || bookInformation.getName().toUpperCase().contains(search.toUpperCase())) {
+
+                                    books.add(bookInformation);
+                                }
+                            }
+                            else if(spinner_value.equalsIgnoreCase("Author Name")) {
+
+                                if (search.equalsIgnoreCase(bookInformation.getAuthor()) || bookInformation.getAuthor().toUpperCase().contains(search.toUpperCase())) {
+
+                                    books.add(bookInformation);
+                                }
+                            }
+                            else if(spinner_value.equalsIgnoreCase("Publisher Name")) {
+
+                                if (search.equalsIgnoreCase(bookInformation.getPublisher()) || bookInformation.getPublisher().toUpperCase().contains(search.toUpperCase())) {
+
+                                    books.add(bookInformation);
+                                }
                             }
                         }
                         handler=new Handler();
@@ -196,7 +207,9 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("books",books);
                                 intent.putExtras(bundle);
+                                intent.putExtra("id name",id_name);
                                 startActivity(intent);
+                                finish();
                             }
                        },2500);
 
@@ -206,10 +219,9 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
 
                     }
                 });}
-
-
             }
         });
+
     }
 
     @Override
@@ -240,8 +252,14 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
     private void handleSignInResult(GoogleSignInResult result){
         if(result.isSuccess()){
             GoogleSignInAccount account=result.getSignInAccount();
+            id_name=account.getEmail().substring(0,8);
+            Log.d("Nameeeee",account.getEmail().substring(0,8));
             userName.setText(account.getDisplayName());
             userEmail.setText(account.getEmail());
+            /*SharedPreferences.Editor editor = getSharedPreferences("PREF", MODE_PRIVATE).edit();
+            editor.putString("rollno", account.getEmail().substring(0,8));
+            editor.putString("name",account.getDisplayName());
+            editor.apply();*/
             try{
                 Glide.with(this).load(account.getPhotoUrl()).into(userPic);
             }catch (NullPointerException e){

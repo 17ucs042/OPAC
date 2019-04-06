@@ -28,6 +28,7 @@ public class Books extends AppCompatActivity {
         setContentView(R.layout.activity_books);
 
         books = (ArrayList<BookInformation>) getIntent().getExtras().getSerializable("books");
+        final String id_name = getIntent().getStringExtra("id name");
         bookAdapter = new BookAdapter(this, books);
         book_list = findViewById(R.id.book_list);
         book_list.setAdapter(bookAdapter);
@@ -53,7 +54,9 @@ public class Books extends AppCompatActivity {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("copies",copies1);
                         intent.putExtras(bundle);
+                        intent.putExtra("id name",id_name);
                         startActivity(intent);
+                        finish();
                         /*Copies copy = copies.get("copy1");
                         Log.d("status_is", copy.getAccession().toString());
                        // Log.d("status_is", copy.get(0).toString());

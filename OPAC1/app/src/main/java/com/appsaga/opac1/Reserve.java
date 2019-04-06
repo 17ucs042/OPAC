@@ -1,5 +1,9 @@
 package com.appsaga.opac1;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +14,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,11 +33,14 @@ import static java.security.AccessController.getContext;
 
 public class Reserve extends AppCompatActivity {
 
+
     ArrayList<Copies> to_reserve;
     ListView to_reserve_list;
     ReserveAdapter reserveAdapter;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
+
+    String name,rollno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +51,18 @@ public class Reserve extends AppCompatActivity {
         to_reserve_list = findViewById(R.id.to_reserve_list);
         reserveAdapter = new ReserveAdapter(this,to_reserve);
         to_reserve_list.setAdapter(reserveAdapter);
+        final String id_name = getIntent().getStringExtra("id name");
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
-
+        /*SharedPreferences prefs = getSharedPreferences("PREF", MODE_PRIVATE);
+        String restoredText = prefs.getString("text", null);
+        if (restoredText != null) {
+            String rollno= prefs.getString("rollno", "No name defined");//"No name defined" is the default value.
+            String Name = prefs.getString("name", "No name defined"); //0 is the default value.
+            Toast.makeText(this, Name, Toast.LENGTH_SHORT).show();
+            Log.d("RESERVE",Name);
+        }*/
         final Button reserve = findViewById(R.id.complete_reserve);
 
         final DatabaseReference booksRef = databaseReference.child("Books");
@@ -56,7 +80,15 @@ public class Reserve extends AppCompatActivity {
                         String name = textView.getText().toString();
                         Toast.makeText(Reserve.this,"Reserving "+name,Toast.LENGTH_SHORT).show();
                         Log.d("Keyyyyyy",to_reserve.get(i).getKey()+"  "+to_reserve.get(i).getParent_key());
-                        databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).child("copies").child(to_reserve.get(i).getKey()).child("reserved").setValue("Done");
+                        databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).child("copies").child(to_reserve.get(i).getKey()).child("reserved").setValue(id_name);
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        },500);
                     }
                 }
             }
