@@ -4,32 +4,116 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BookDetails"
-    android:background="@color/light">
+    android:background="@color/light"
+    tools:context=".BookDetails">
+
+    <LinearLayout
+        android:id="@+id/detail_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="3dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/code"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Series Code" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/accession"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Acc. No." />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Type" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Status" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/issued_by"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Issued By" />
+        </LinearLayout>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/book_detail_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/reserve"
+        android:layout_marginTop="8dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp"
-        android:layout_above="@id/reserve"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="8dp"/>
+        android:layout_below="@id/detail_header"/>
 
     <Button
         android:id="@+id/reserve"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reserve This Item"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/round_button"
         android:paddingStart="8dp"
-        android:paddingRight="8dp"
         android:paddingLeft="8dp"
         android:paddingEnd="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"/>
+        android:paddingRight="8dp"
+        android:text="Reserve This Item" />
 
 </RelativeLayout>

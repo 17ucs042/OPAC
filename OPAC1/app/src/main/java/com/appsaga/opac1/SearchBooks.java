@@ -70,8 +70,8 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
     Handler handler;
 
     TextView userEmail,userName;
-    ArrayList<BookInformation> books;
     ImageView userPic;
+    ArrayList<BookInformation> books;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,7 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
                                 public void onResult(Status status) {
                                     if (status.isSuccess()){
                                         gotoMainActivity();
+                                        finish();
                                     }else{
                                         Toast.makeText(getApplicationContext(),"Session not close",Toast.LENGTH_LONG).show();
                                     }
@@ -124,9 +125,6 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
         userEmail =  headerView.findViewById(R.id.user_id);
         userName =  headerView.findViewById(R.id.user_name);
          userPic = headerView.findViewById(R.id.user_pic);
-
-
-
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -157,18 +155,18 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
 
                 final String book_name=findBooks.getText().toString().trim();
                if(findBooks.getText().toString().trim().equalsIgnoreCase(""))
-               {
-                   findBooks.setError("Please Enter");
+              {
+                  findBooks.setError("Please Enter");
                }
-               else{
-                   bookload.setVisibility(View.VISIBLE);
+              else{
+                  bookload.setVisibility(View.VISIBLE);
                    bookload.start();
 
                 booksRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                         books = new ArrayList<>();
+                        books = new ArrayList<>();
                         books.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
@@ -188,7 +186,7 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
                         handler=new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
-                            public void run() {
+                           public void run() {
                                 bookload.stop();
                                 bookload.setVisibility(View.INVISIBLE);
                                 Intent intent = new Intent(SearchBooks.this,Books.class);
@@ -197,7 +195,7 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                             }
-                        },2500);
+                       },2500);
 
                     }
                     @Override
@@ -246,19 +244,16 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
             }catch (NullPointerException e){
                 Toast.makeText(getApplicationContext(),"image not found",Toast.LENGTH_LONG).show();
             }
-
-        }else{
-            gotoMainActivity();
         }
-
-
-
-
+        else
+        {
+            finish();
+        }
     }
     private void gotoMainActivity(){
-        Intent intent=new Intent(this,SignIn.class);
+       Intent intent=new Intent(this,SignIn.class);
         startActivity(intent);
-    }
+   }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 

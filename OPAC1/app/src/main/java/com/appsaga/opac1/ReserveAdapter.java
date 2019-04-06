@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,7 +19,7 @@ public class ReserveAdapter extends ArrayAdapter<Copies> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
 
         View reserve_view = convertView;
 
@@ -32,12 +35,29 @@ public class ReserveAdapter extends ArrayAdapter<Copies> {
         TextView type = reserve_view.findViewById(R.id.type);
         TextView status = reserve_view.findViewById(R.id.status);
         TextView reserved = reserve_view.findViewById(R.id.reserved);
+        Button reserve = reserve_view.findViewById(R.id.reserve);
+        final CheckBox check = reserve_view.findViewById(R.id.check);
 
         accession.setText(current_copy.getAccession());
         code.setText(current_copy.getCode());
         type.setText(current_copy.getType());
         status.setText(current_copy.getStatus());
         reserved.setText(current_copy.getReserved());
+
+        check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                for(int i=0;i<parent.getChildCount();i++)
+                {
+                    if(i!=position) {
+                        View view = parent.getChildAt(i);
+                        CheckBox checkBox = view.findViewById(R.id.check);
+                        checkBox.setChecked(false);
+                    }
+                }
+            }
+        });
 
         return reserve_view;
     }
