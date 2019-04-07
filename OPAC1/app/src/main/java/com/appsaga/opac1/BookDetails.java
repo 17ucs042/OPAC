@@ -35,7 +35,7 @@ public class BookDetails extends AppCompatActivity {
 
         for(Copies cp : copies1)
         {
-            if(cp.getStatus().equalsIgnoreCase("Issue") && cp.getReserved().equalsIgnoreCase("None"))
+            if(cp.getStatus().equalsIgnoreCase("Issue") && cp.getReserved().equalsIgnoreCase("-"))
             {
                 to_reserve.add(cp);
             }

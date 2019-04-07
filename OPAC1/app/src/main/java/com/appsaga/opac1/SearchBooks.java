@@ -78,11 +78,16 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
     ArrayList<BookInformation> books;
     String id_name;
     Animation animation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_books);
-        dl = (DrawerLayout) findViewById(R.id.drawer);
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+        final DatabaseReference booksRef = databaseReference.child("Books");
+        dl =  findViewById(R.id.drawer);
         t = new ActionBarDrawerToggle(this, dl, R.string.open, R.string.close);
         dl.addDrawerListener(t);
          animation = AnimationUtils.loadAnimation(this, R.anim.blink);
@@ -120,9 +125,43 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                if (id == R.id.issuedetails) {
-                    //startActivity(new Intent(SearchBooks.this,IssueDetails.class));
-                } else {
+                if (id == R.id.issuedetails)
+                {
+                    final ArrayList<String> accession = new ArrayList<>();
+
+                    booksRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                BookInformation bookInformation = ds.getValue(BookInformation.class);
+
+                                HashMap<String,Copies> hashMap = bookInformation.getCopies();
+
+                                for(Map.Entry<String,Copies> entry: hashMap.entrySet())
+                                {
+                                    if(id_name.equalsIgnoreCase(entry.getValue().getIssued_by()))
+                                    {
+                                        accession.add(entry.getValue().getAccession());
+                                    }
+                                }
+                            }
+                            Intent intent= new Intent(SearchBooks.this,IssueDetails.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("books",accession);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //finish();
+                }
+                else {
                     FirebaseAuth.getInstance().signOut();
                     Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
                             new ResultCallback<Status>() {
@@ -173,9 +212,6 @@ bookload=(BookLoading)findViewById(R.id.bookloading);
         findBooks=findViewById(R.id.find_books);
         search=findViewById(R.id.search);
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference();
-        final DatabaseReference booksRef = databaseReference.child("Books");
         //booksRef.push().child("001").setValue("Iridov");
 
         search.setOnClickListener(new View.OnClickListener() {
