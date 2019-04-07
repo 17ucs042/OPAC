@@ -6,7 +6,7 @@
 
 	Tech-Stack Used:
 	Built with: Android Studio
-	Database used: Firebase,SQLIite3
+	Database used: Firebase,SQLite3
 	Languages Used: JSON,XML,JAVA
 
 	Features:
