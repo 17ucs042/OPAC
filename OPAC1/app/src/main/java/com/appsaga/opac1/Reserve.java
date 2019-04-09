@@ -78,7 +78,12 @@ public class Reserve extends AppCompatActivity {
                     {
                         TextView textView = view.findViewById(R.id.accession);
                         String name = textView.getText().toString();
-                        Toast.makeText(Reserve.this,"Reserving "+name,Toast.LENGTH_SHORT).show();
+                        String bookname;
+                        String authorname;
+                        String pub;
+                        SendMail sm = new SendMail(Reserve.this, id_name+"@lnmiit.ac.in", "BOOK RESERVED", "Book Name: "+bookname+"Author Name: "+authorname+"Publisher: "+pub+"Accession Number: "+name);
+                        sm.execute();
+                        Toast.makeText(Reserve.this,"Reserving "+bookname,Toast.LENGTH_SHORT).show();
                         Log.d("Keyyyyyy",to_reserve.get(i).getKey()+"  "+to_reserve.get(i).getParent_key());
                         databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).child("copies").child(to_reserve.get(i).getKey()).child("reserved").setValue(id_name);
 
