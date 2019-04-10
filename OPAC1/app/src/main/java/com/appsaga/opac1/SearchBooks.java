@@ -110,7 +110,7 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
             }
         });
 
-bookload=(BookLoading)findViewById(R.id.bookloading);
+        bookload=(BookLoading)findViewById(R.id.bookloading);
         gso =  new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();

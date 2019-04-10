@@ -24,10 +24,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.security.AccessController.getContext;
 
@@ -39,6 +43,8 @@ public class Reserve extends AppCompatActivity {
     ReserveAdapter reserveAdapter;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
+
+    DatabaseReference booksRef;
 
     String name,rollno;
 
@@ -65,7 +71,7 @@ public class Reserve extends AppCompatActivity {
         }*/
         final Button reserve = findViewById(R.id.complete_reserve);
 
-        final DatabaseReference booksRef = databaseReference.child("Books");
+        booksRef = databaseReference.child("Books");
         reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,15 +84,31 @@ public class Reserve extends AppCompatActivity {
                     {
                         TextView textView = view.findViewById(R.id.accession);
                         String name = textView.getText().toString();
-                        String bookname;
+
+                        final String bookname;
                         String authorname;
                         String pub;
                         SendMail sm = new SendMail(Reserve.this, id_name+"@lnmiit.ac.in", "BOOK RESERVED", "Book Name: "+bookname+"Author Name: "+authorname+"Publisher: "+pub+"Accession Number: "+name);
                         sm.execute();
-                        Toast.makeText(Reserve.this,"Reserving "+bookname,Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Reserve.this,"Reserving "+bookname,Toast.LENGTH_SHORT).show();
                         Log.d("Keyyyyyy",to_reserve.get(i).getKey()+"  "+to_reserve.get(i).getParent_key());
                         databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).child("copies").child(to_reserve.get(i).getKey()).child("reserved").setValue(id_name);
 
+                        databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                BookInformation bookInformation = dataSnapshot.getValue(BookInformation.class);
+
+                                Toast.makeText(Reserve.this,bookInformation.getName(),Toast.LENGTH_SHORT).show();
+                                Log.d("booknameeeeee",bookInformation.getName());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
