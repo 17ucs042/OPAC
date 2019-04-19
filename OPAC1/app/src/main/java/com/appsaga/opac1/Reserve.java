@@ -43,7 +43,9 @@ public class Reserve extends AppCompatActivity {
     ReserveAdapter reserveAdapter;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
-
+    String bookname;
+    String authorname;
+    String pub;
     DatabaseReference booksRef;
 
     String name,rollno;
@@ -83,25 +85,20 @@ public class Reserve extends AppCompatActivity {
                     if(checkBox.isChecked())
                     {
                         TextView textView = view.findViewById(R.id.accession);
-                        String name = textView.getText().toString();
-
-                        final String bookname;
-                        String authorname;
-                        String pub;
-                        SendMail sm = new SendMail(Reserve.this, id_name+"@lnmiit.ac.in", "BOOK RESERVED", "Book Name: "+bookname+"Author Name: "+authorname+"Publisher: "+pub+"Accession Number: "+name);
-                        sm.execute();
-                        //Toast.makeText(Reserve.this,"Reserving "+bookname,Toast.LENGTH_SHORT).show();
-                        Log.d("Keyyyyyy",to_reserve.get(i).getKey()+"  "+to_reserve.get(i).getParent_key());
-                        databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).child("copies").child(to_reserve.get(i).getKey()).child("reserved").setValue(id_name);
-
+                        final String name = textView.getText().toString();
                         databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                 BookInformation bookInformation = dataSnapshot.getValue(BookInformation.class);
-
+                                bookname=bookInformation.getName();
+                                authorname=bookInformation.getAuthor();
+                                pub=bookInformation.getPublisher();
                                 Toast.makeText(Reserve.this,bookInformation.getName(),Toast.LENGTH_SHORT).show();
                                 Log.d("booknameeeeee",bookInformation.getName());
+                                SendMail sm = new SendMail(Reserve.this, id_name+"@lnmiit.ac.in", "BOOK RESERVED", "Book Name: "+bookname+"\nAuthor Name: "+authorname+"\nPublisher: "+pub+"\nAccession Number: "+name);
+                                sm.execute();
+
                             }
 
                             @Override
@@ -109,6 +106,13 @@ public class Reserve extends AppCompatActivity {
 
                             }
                         });
+
+
+                        //Toast.makeText(Reserve.this,"Reserving "+bookname,Toast.LENGTH_SHORT).show();
+                        Log.d("Keyyyyyy",to_reserve.get(i).getKey()+"  "+to_reserve.get(i).getParent_key());
+                        databaseReference.child("Books").child(to_reserve.get(i).getParent_key()).child("copies").child(to_reserve.get(i).getKey()).child("reserved").setValue(id_name);
+
+
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
