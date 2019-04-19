@@ -76,6 +76,7 @@ public class SignIn extends AppCompatActivity implements GoogleApiClient.OnConne
                     // User is signed in
                     // you could place other firebase code
                     startActivity(new Intent(SignIn.this,SearchBooks.class));
+                    finish();
                     //logic to save the user details to Firebase
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
@@ -179,6 +180,7 @@ public class SignIn extends AppCompatActivity implements GoogleApiClient.OnConne
         if(user!=null) {
 
             startActivity(new Intent(SignIn.this, SearchBooks.class));
+            finish();
         }
         //        firebaseAuth.addAuthStateListener(authStateListener);
     }

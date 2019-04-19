@@ -50,19 +50,19 @@ public class Books extends AppCompatActivity {
                         {
                             copies1.add(entry.getValue());
                         }
-                        Intent intent = new Intent(Books.this,BookDetails.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("copies",copies1);
-                        intent.putExtras(bundle);
-                        intent.putExtra("id name",id_name);
-                        startActivity(intent);
-                        finish();
                         /*Copies copy = copies.get("copy1");
                         Log.d("status_is", copy.getAccession().toString());
                        // Log.d("status_is", copy.get(0).toString());
                         Toast.makeText(Books.this, copy.getAccession(), Toast.LENGTH_SHORT).show();*/
                     }
                 }
+                Intent intent = new Intent(Books.this,BookDetails.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("copies",copies1);
+                intent.putExtras(bundle);
+                intent.putExtra("id name",id_name);
+                startActivity(intent);
+                finish();
             }
         });
     }

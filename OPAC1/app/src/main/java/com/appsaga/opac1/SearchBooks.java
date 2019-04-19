@@ -55,7 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SearchBooks extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class SearchBooks extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
     private NavigationView nv;
@@ -63,17 +63,20 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
-    Handler handler=new Handler();
+    Handler handler = new Handler();
     private GoogleApiClient googleApiClient;
     private GoogleSignInOptions gso;
 
     BookLoading bookload;
 
+    Boolean search_pressed = false;
+    Boolean issued_pressed = false;
+
     private static final String TAG = "ViewDatabase";
     EditText findBooks;
     ImageView search;
 
-    TextView userEmail,userName,bookCD;
+    TextView userEmail, userName, bookCD;
     ImageView userPic;
     ArrayList<BookInformation> books;
     String id_name;
@@ -87,13 +90,13 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
         final DatabaseReference booksRef = databaseReference.child("Books");
-        dl =  findViewById(R.id.drawer);
+        dl = findViewById(R.id.drawer);
         t = new ActionBarDrawerToggle(this, dl, R.string.open, R.string.close);
         dl.addDrawerListener(t);
-         animation = AnimationUtils.loadAnimation(this, R.anim.blink);
+        animation = AnimationUtils.loadAnimation(this, R.anim.blink);
         t.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        bookCD=findViewById(R.id.textView2);
+        bookCD = findViewById(R.id.textView2);
         bookCD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,14 +113,14 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
             }
         });
 
-        bookload=(BookLoading)findViewById(R.id.bookloading);
-        gso =  new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        bookload = (BookLoading) findViewById(R.id.bookloading);
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
-        googleApiClient=new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
         nv = findViewById(R.id.nv);
@@ -125,34 +128,42 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                if (id == R.id.issuedetails)
-                {
-                    final ArrayList<String> accession = new ArrayList<>();
+                if (id == R.id.issuedetails) {
+
+                    issued_pressed = true;
+
+                    final ArrayList<IssuedBooks> issued_books = new ArrayList<>();
 
                     booksRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            if (issued_pressed == Boolean.TRUE) {
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                                BookInformation bookInformation = ds.getValue(BookInformation.class);
+                                    BookInformation bookInformation = ds.getValue(BookInformation.class);
 
-                                HashMap<String,Copies> hashMap = bookInformation.getCopies();
+                                    String name = bookInformation.getName();
+                                    String publisher = bookInformation.getPublisher();
+                                    String author = bookInformation.getAuthor();
 
-                                for(Map.Entry<String,Copies> entry: hashMap.entrySet())
-                                {
-                                    if(id_name.equalsIgnoreCase(entry.getValue().getIssued_by()))
-                                    {
-                                        accession.add(entry.getValue().getAccession());
+                                    HashMap<String, Copies> hashMap = bookInformation.getCopies();
+
+                                    for (Map.Entry<String, Copies> entry : hashMap.entrySet()) {
+                                        if (id_name.equalsIgnoreCase(entry.getValue().getIssued_by())) {
+                                            issued_books.add(new IssuedBooks(name, entry.getValue().getAccession(), author, publisher));
+                                        }
                                     }
                                 }
+                                Intent intent = new Intent(SearchBooks.this, IssueDetails.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("issued_books", issued_books);
+                                intent.putExtras(bundle);
+                                issued_pressed = false;
+                                startActivity(intent);
                             }
-                            Intent intent= new Intent(SearchBooks.this,IssueDetails.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("books",accession);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
@@ -160,18 +171,17 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
                     });
 
                     //finish();
-                }
-                else {
+                } else if (id == R.id.logout) {
                     FirebaseAuth.getInstance().signOut();
                     Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
                             new ResultCallback<Status>() {
                                 @Override
                                 public void onResult(Status status) {
-                                    if (status.isSuccess()){
+                                    if (status.isSuccess()) {
                                         gotoMainActivity();
                                         finish();
-                                    }else{
-                                        Toast.makeText(getApplicationContext(),"Session not close",Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Session not close", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
@@ -183,9 +193,9 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
         });
 
         View headerView = nv.getHeaderView(0);
-        userEmail =  headerView.findViewById(R.id.user_id);
-        userName =  headerView.findViewById(R.id.user_name);
-         userPic = headerView.findViewById(R.id.user_pic);
+        userEmail = headerView.findViewById(R.id.user_id);
+        userName = headerView.findViewById(R.id.user_name);
+        userPic = headerView.findViewById(R.id.user_pic);
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -194,7 +204,9 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
         spinner.setAdapter(adapter);
 
         final ImageView filter = findViewById(R.id.filter);
-        filter.setOnClickListener(new View.OnClickListener() {
+        filter.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View v) {
                 filter.startAnimation(animation);
@@ -209,26 +221,33 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
             }
         });
 
-        findBooks=findViewById(R.id.find_books);
-        search=findViewById(R.id.search);
+        findBooks =
+
+                findViewById(R.id.find_books);
+
+        search =
+
+                findViewById(R.id.search);
 
         //booksRef.push().child("001").setValue("Iridov");
 
-        search.setOnClickListener(new View.OnClickListener() {
+        search.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View v) {
+
+                search_pressed = true;
 
                 search.startAnimation(animation);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        final String search=findBooks.getText().toString().trim();
+                        final String search = findBooks.getText().toString().trim();
                         final String spinner_value = spinner.getSelectedItem().toString();
-                        if(findBooks.getText().toString().trim().equalsIgnoreCase(""))
-                        {
+                        if (findBooks.getText().toString().trim().equalsIgnoreCase("")) {
                             findBooks.setError("Please Enter");
-                        }
-                        else{
+                        } else {
                             bookload.setVisibility(View.VISIBLE);
                             bookload.start();
 
@@ -236,57 +255,59 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    books = new ArrayList<>();
-                                    books.clear();
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    if (search_pressed == Boolean.TRUE) {
+                                        books = new ArrayList<>();
+                                        books.clear();
+                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                                        BookInformation bookInformation = ds.getValue(BookInformation.class);
+                                            BookInformation bookInformation = ds.getValue(BookInformation.class);
 
-                                        if(spinner_value.equalsIgnoreCase("Title")) {
+                                            if (spinner_value.equalsIgnoreCase("Title")) {
 
-                                            if (search.equalsIgnoreCase(bookInformation.getName()) || bookInformation.getName().toUpperCase().contains(search.toUpperCase())) {
+                                                if (search.equalsIgnoreCase(bookInformation.getName()) || bookInformation.getName().toUpperCase().contains(search.toUpperCase())) {
 
-                                                books.add(bookInformation);
+                                                    books.add(bookInformation);
+                                                }
+                                            } else if (spinner_value.equalsIgnoreCase("Author Name")) {
+
+                                                if (search.equalsIgnoreCase(bookInformation.getAuthor()) || bookInformation.getAuthor().toUpperCase().contains(search.toUpperCase())) {
+
+                                                    books.add(bookInformation);
+                                                }
+                                            } else if (spinner_value.equalsIgnoreCase("Publisher Name")) {
+
+                                                if (search.equalsIgnoreCase(bookInformation.getPublisher()) || bookInformation.getPublisher().toUpperCase().contains(search.toUpperCase())) {
+
+                                                    books.add(bookInformation);
+                                                }
                                             }
                                         }
-                                        else if(spinner_value.equalsIgnoreCase("Author Name")) {
-
-                                            if (search.equalsIgnoreCase(bookInformation.getAuthor()) || bookInformation.getAuthor().toUpperCase().contains(search.toUpperCase())) {
-
-                                                books.add(bookInformation);
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                bookload.stop();
+                                                bookload.setVisibility(View.INVISIBLE);
+                                                Intent intent = new Intent(SearchBooks.this, Books.class);
+                                                Bundle bundle = new Bundle();
+                                                bundle.putSerializable("books", books);
+                                                intent.putExtras(bundle);
+                                                intent.putExtra("id name", id_name);
+                                                search_pressed = false;
+                                                startActivity(intent);
                                             }
-                                        }
-                                        else if(spinner_value.equalsIgnoreCase("Publisher Name")) {
+                                        }, 2500);
 
-                                            if (search.equalsIgnoreCase(bookInformation.getPublisher()) || bookInformation.getPublisher().toUpperCase().contains(search.toUpperCase())) {
-
-                                                books.add(bookInformation);
-                                            }
-                                        }
                                     }
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            bookload.stop();
-                                            bookload.setVisibility(View.INVISIBLE);
-                                            Intent intent = new Intent(SearchBooks.this,Books.class);
-                                            Bundle bundle = new Bundle();
-                                            bundle.putSerializable("books",books);
-                                            intent.putExtras(bundle);
-                                            intent.putExtra("id name",id_name);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    },2500);
-
                                 }
+
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
 
                                 }
-                            });}
-
+                            });
+                        }
                     }
+
                 }, 500);
 
 
@@ -307,11 +328,11 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
     @Override
     protected void onStart() {
         super.onStart();
-        OptionalPendingResult<GoogleSignInResult> opr= Auth.GoogleSignInApi.silentSignIn(googleApiClient);
-        if(opr.isDone()){
-            GoogleSignInResult result=opr.get();
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+        if (opr.isDone()) {
+            GoogleSignInResult result = opr.get();
             handleSignInResult(result);
-        }else{
+        } else {
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
@@ -320,37 +341,35 @@ public class SearchBooks extends AppCompatActivity implements GoogleApiClient.On
             });
         }
     }
-    private void handleSignInResult(GoogleSignInResult result){
-        if(result.isSuccess()){
-            GoogleSignInAccount account=result.getSignInAccount();
-            id_name=account.getEmail().substring(0,8);
-            Log.d("Nameeeee",account.getEmail().substring(0,8));
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        if (result.isSuccess()) {
+            GoogleSignInAccount account = result.getSignInAccount();
+            id_name = account.getEmail().substring(0, 8);
+            Log.d("Nameeeee", account.getEmail().substring(0, 8));
             userName.setText(account.getDisplayName());
             userEmail.setText(account.getEmail());
             /*SharedPreferences.Editor editor = getSharedPreferences("PREF", MODE_PRIVATE).edit();
             editor.putString("rollno", account.getEmail().substring(0,8));
             editor.putString("name",account.getDisplayName());
             editor.apply();*/
-            try{
+            try {
                 Glide.with(this).load(account.getPhotoUrl()).into(userPic);
-            }catch (NullPointerException e){
-                Toast.makeText(getApplicationContext(),"image not found",Toast.LENGTH_LONG).show();
+            } catch (NullPointerException e) {
+                Toast.makeText(getApplicationContext(), "image not found", Toast.LENGTH_LONG).show();
             }
-        }
-        else
-        {
+        } else {
             finish();
         }
     }
-    private void gotoMainActivity(){
-       Intent intent=new Intent(this,SignIn.class);
+
+    private void gotoMainActivity() {
+        Intent intent = new Intent(this, SignIn.class);
         startActivity(intent);
-   }
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
-
-
 }

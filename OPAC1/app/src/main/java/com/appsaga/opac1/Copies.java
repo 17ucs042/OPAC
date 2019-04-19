@@ -12,8 +12,9 @@ public class Copies implements Serializable {
     String issued_by;
     String key;
     String parent_key;
+    String issue_date;
 
-    public Copies(String accession, String code, String reserved, String status, String type,String issued_by,String key,String parent_key) {
+    public Copies(String accession, String code, String reserved, String status, String type,String issued_by,String key,String parent_key, String issue_date) {
         this.accession = accession;
         this.code = code;
         this.reserved = reserved;
@@ -22,6 +23,7 @@ public class Copies implements Serializable {
         this.issued_by=issued_by;
         this.key=key;
         this.parent_key=parent_key;
+        this.issue_date=issue_date;
     }
 
     public Copies()
